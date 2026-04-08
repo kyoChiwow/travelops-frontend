@@ -15,22 +15,39 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { z } from "zod";
 
-const formSchema = z.object({
-  name: z.string().min(2).max(50),
+const registerSchema = z.object({
+  name: z
+    .string()
+    .min(3, {
+      error: "Name must be at least 3 characters",
+    })
+    .max(50, {
+      error: "Name must be at most 50 characters",
+    }),
+  email: z.email(),
+  password: z.string().min(8, {
+    error: "Password must be at least 8 characters",
+  }),
+  confirmPassword: z.string().min(8, {
+    error: "Confirmed Password must be at least 8 characters",
+  }),
 });
 
 export function RegisterForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const onSubmit = (data: z.infer<typeof registerSchema>) => {
     console.log(data);
   };
 
@@ -46,15 +63,16 @@ export function RegisterForm({
       <div className="grid gap-6">
         {/* Register Form Here */}
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Name */}
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="John Doe" {...field} />
                   </FormControl>
                   <FormDescription className="mb-2 sr-only">
                     This is your public display name
@@ -63,7 +81,66 @@ export function RegisterForm({
                 </FormItem>
               )}
             />
-            <Button className="mt-2" type="submit">
+            {/* Name */}
+
+            {/* Email */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email Address</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="john.doe@company.com" {...field} />
+                  </FormControl>
+                  <FormDescription className="mb-2 sr-only">
+                    This is your public display name
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* Email */}
+
+            {/* Password */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="********" {...field} />
+                  </FormControl>
+                  <FormDescription className="mb-2 sr-only">
+                    This is your public display name
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* Password */}
+
+            {/* Confirm Password */}
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="********" {...field} />
+                  </FormControl>
+                  <FormDescription className="mb-2 sr-only">
+                    This is your public display name
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* Confirm Password */}
+
+            <Button className="w-full" type="submit">
               Submit
             </Button>
           </form>
