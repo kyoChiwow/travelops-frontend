@@ -9,6 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import Password from "@/components/ui/password";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -31,6 +32,9 @@ const registerSchema = z.object({
   confirmPassword: z.string().min(8, {
     error: "Confirmed Password must be at least 8 characters",
   }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Password do not match!",
+  path: ["confirmPassword"],
 });
 
 export function RegisterForm({
@@ -91,7 +95,11 @@ export function RegisterForm({
                 <FormItem>
                   <FormLabel>Email Address</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="john.doe@company.com" {...field} />
+                    <Input
+                      type="email"
+                      placeholder="john.doe@company.com"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription className="mb-2 sr-only">
                     This is your public display name
@@ -110,7 +118,7 @@ export function RegisterForm({
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
+                    <Password {...field} />
                   </FormControl>
                   <FormDescription className="mb-2 sr-only">
                     This is your public display name
@@ -129,7 +137,7 @@ export function RegisterForm({
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
+                    <Password {...field} />
                   </FormControl>
                   <FormDescription className="mb-2 sr-only">
                     This is your public display name
