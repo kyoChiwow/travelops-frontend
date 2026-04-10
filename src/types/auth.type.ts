@@ -12,3 +12,8 @@ export interface IRegister {
     email: string;
     password: string;
 }
+
+export interface IVerifyOTP {
+    email: string;
+    otp: string;
+}
