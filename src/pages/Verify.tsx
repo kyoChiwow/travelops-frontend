@@ -21,6 +21,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { cn } from "@/lib/utils";
 import {
   useSendOtpMutation,
   useVerifyOtpMutation,
@@ -46,6 +47,7 @@ export default function Verify() {
   const [confirmed, setConfirmed] = useState(false);
   const [sendOtp] = useSendOtpMutation();
   const [verifyOtp] = useVerifyOtpMutation();
+  const [timer, setTimer] = useState(5);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -54,8 +56,9 @@ export default function Verify() {
     },
   });
 
-  const handleConfirm = async () => {
+  const handleSendOtp = async () => {
     const toastId = toast.loading("Sending OTP...");
+
     try {
       const res = await sendOtp({ email }).unwrap();
 
@@ -64,6 +67,7 @@ export default function Verify() {
           id: toastId,
         });
         setConfirmed(true);
+        setTimer(5);
       }
     } catch (error) {
       console.log(error);
@@ -91,6 +95,21 @@ export default function Verify() {
       navigate("/");
     }
   }, [email, navigate]);
+
+  useEffect(() => {
+    if (!email || !confirmed) {
+      return;
+    }
+
+    const timerId = setInterval(() => {
+      if (email && confirmed) {
+        setTimer((prev) => (prev > 0 ? prev - 1 : 0));
+        console.log("Tick");
+      }
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, [email, confirmed]);
 
   return (
     <div className="grid place-content-center h-screen">
@@ -143,7 +162,21 @@ export default function Verify() {
                           </InputOTPGroup>
                         </InputOTP>
                       </FormControl>
-                      <FormDescription></FormDescription>
+                      <FormDescription>
+                        <Button
+                          onClick={handleSendOtp}
+                          type="button"
+                          variant="link"
+                          disabled={timer !== 0}
+                          className={cn("p-0 m-0", {
+                            "cursor-pointer": timer === 0,
+                            "text-gray-500": timer !== 0,
+                          })}
+                        >
+                          Resend OTP:
+                        </Button>{" "}
+                        {timer}
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -168,7 +201,7 @@ export default function Verify() {
           </CardHeader>
 
           <CardFooter className="flex justify-end">
-            <Button onClick={handleConfirm} className="w-75">
+            <Button onClick={handleSendOtp} className="w-75">
               Confirm
             </Button>
           </CardFooter>

@@ -12,7 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
-import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
+import type { ILogin } from "@/types";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -20,22 +21,27 @@ export function LoginForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const form = useForm();
+  const form = useForm<ILogin>();
   const [login] = useLoginMutation();
   const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit: SubmitHandler<ILogin> = async (data) => {
     console.log(data);
     try {
       const res = await login(data).unwrap();
       console.log(res);
     } catch (err: any) {
       console.log(err);
-      if (err.status === 401) {
+
+      if (err.data.message === "User is not verified!") {
         toast.error("Your account is not verified!");
         navigate("/verify", {
-          state: data.email
+          state: data.email,
         });
+      }
+
+      if (err.data.message === "Password does not match!") {
+        toast.error("Invalid credentials!");
       }
     }
   };

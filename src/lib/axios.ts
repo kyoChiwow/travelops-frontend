@@ -3,6 +3,7 @@ import axios from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: config.baseUrl,
+  withCredentials: true, // This will ensure the HTTP only cookie
 });
 
 // Add a request interceptor
