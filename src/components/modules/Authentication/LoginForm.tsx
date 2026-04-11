@@ -30,7 +30,12 @@ export function LoginForm({
     console.log(data);
     try {
       const res = await login(data).unwrap();
-      console.log(res);
+      
+      if (res.success) {
+        toast.success("Logged in successfully!");
+        navigate("/");
+      }
+
     } catch (err: any) {
       console.log(err);
 
