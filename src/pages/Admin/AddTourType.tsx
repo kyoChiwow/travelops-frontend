@@ -1,4 +1,5 @@
-import { AddTourModal } from "@/components/modules/TourType/AddTourModal";
+
+import { AddTourTypeModal } from "@/components/modules/TourType/AddTourTypeModal";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -18,7 +19,7 @@ export default function AddTourType() {
     <div className="w-full max-w-7xl mx-auto px-5">
       <div className="flex justify-between my-8">
         <h1 className="text-xl font-semibold">Tour Types</h1>
-        <AddTourModal />
+        <AddTourTypeModal />
       </div>
       <div className="border border-muted rounded-md">
         <Table>
@@ -30,7 +31,7 @@ export default function AddTourType() {
           </TableHeader>
           <TableBody>
             {data?.data?.map((item: { name: string }) => (
-              <TableRow>
+              <TableRow key={item.name}>
                 <TableCell className="w-full">{item?.name}</TableCell>
                 <TableCell className="text-right">
                   <Button size={"sm"}>
