@@ -1,4 +1,5 @@
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { DeleteConfirmation } from "@/components/DeleteConfirmation";
 import { AddTourTypeModal } from "@/components/modules/TourType/AddTourTypeModal";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,12 +10,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetTourTypesQuery } from "@/redux/features/Tour/tour.api";
+import {
+  useGetTourTypesQuery,
+  useRemoveTourTypeMutation,
+} from "@/redux/features/Tour/tour.api";
 import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function AddTourType() {
   const { data } = useGetTourTypesQuery(undefined);
-  console.log(data);
+  const [removeTourType] = useRemoveTourTypeMutation();
+
+  const handleRemoveTourType = async (tourId: string) => {
+    try {
+      const res = await removeTourType(tourId).unwrap();
+
+      if (res.success) {
+        toast.success("Tour Type removed successfully!");
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error("Something went wrong!");
+    }
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto px-5">
       <div className="flex justify-between my-8">
@@ -30,13 +49,17 @@ export default function AddTourType() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.data?.map((item: { name: string }) => (
+            {data?.data?.map((item: { _id: string; name: string }) => (
               <TableRow key={item.name}>
                 <TableCell className="w-full">{item?.name}</TableCell>
                 <TableCell className="text-right">
-                  <Button size={"sm"}>
-                    <Trash2 />
-                  </Button>
+                  <DeleteConfirmation
+                    onConfirm={() => handleRemoveTourType(item._id)}
+                  >
+                    <Button size={"sm"}>
+                      <Trash2 />
+                    </Button>
+                  </DeleteConfirmation>
                 </TableCell>
               </TableRow>
             ))}
