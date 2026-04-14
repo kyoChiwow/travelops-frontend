@@ -12,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { role } from "@/constants/role";
 import {
   authApi,
   useLogoutMutation,
@@ -23,16 +24,17 @@ import { ModeToggle } from "./modeToggler";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
+  { href: "/", label: "Home", role: "PUBLIC" },
+  { href: "/about", label: "About", role: "PUBLIC" },
+  { href: "/admin", label: "Dashboard", role: role.admin },
+  { href: "/admin", label: "Dashboard", role: role.superAdmin },
+  { href: "/user", label: "Dashboard", role: role.user },
 ];
 
 export default function Navbar() {
   const { data } = useUserInfoQuery(undefined);
   const [logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
-
-  console.log(data?.data?.data?.email)
 
   const handleLogout = async () => {
     try {
@@ -105,17 +107,25 @@ export default function Navbar() {
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
-                {navigationLinks.map((link, _index) => (
-                  <NavigationMenuItem key={link.label}>
-                    <NavigationMenuLink
-                      asChild
-                      className="py-1.5 font-medium text-muted-foreground hover:text-primary"
-                      href={link.href}
-                    >
-                      <Link to={link.href}>{link.label}</Link>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                ))}
+                {navigationLinks.map((link) => {
+                  if (
+                    link.role === "PUBLIC" ||
+                    link.role === data?.data?.data?.role
+                  ) {
+                    return (
+                      <NavigationMenuItem key={`${link.href}-${link.role}`}>
+                        <NavigationMenuLink
+                          asChild
+                          className="py-1.5 font-medium text-muted-foreground hover:text-primary"
+                        >
+                          <Link to={link.href}>{link.label}</Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    );
+                  }
+
+                  return null;
+                })}
               </NavigationMenuList>
             </NavigationMenu>
           </div>
