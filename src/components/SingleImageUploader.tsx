@@ -3,8 +3,9 @@
 import { AlertCircleIcon, ImageUpIcon, XIcon } from "lucide-react";
 
 import { useFileUpload } from "@/hooks/use-file-upload";
+import { useEffect } from "react";
 
-export default function Component() {
+export default function SingleImageUploader({ onChange }) {
   const maxSizeMB = 5;
   const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
 
@@ -23,6 +24,16 @@ export default function Component() {
     accept: "image/*",
     maxSize,
   });
+
+  console.log("Inside image uploader", files);
+
+  useEffect(() => {
+    if (files.length > 0) {
+      onChange(files[0].file);
+    } else {
+      onChange(null);
+    }
+  }, [files, onChange]);
 
   const previewUrl = files[0]?.preview || null;
 
@@ -94,20 +105,6 @@ export default function Component() {
           <span>{errors[0]}</span>
         </div>
       )}
-
-      <p
-        aria-live="polite"
-        className="mt-2 text-center text-muted-foreground text-xs"
-        role="region"
-      >
-        Single image uploader w/ max size ∙{" "}
-        <a
-          className="underline hover:text-foreground"
-          href="https://github.com/cosscom/coss/blob/main/apps/origin/docs/use-file-upload.md"
-        >
-          API
-        </a>
-      </p>
     </div>
   );
 }
