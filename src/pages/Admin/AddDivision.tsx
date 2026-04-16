@@ -26,6 +26,8 @@ interface IDivision {
 export default function AddDivision() {
   const { data } = useGetDivisionsQuery(undefined);
   const [removeDivision] = useDeleteDivisionMutation();
+  
+  console.log(data)
 
   const handleRemoveTourType = async (divisionId: string) => {
     try {
@@ -56,7 +58,7 @@ export default function AddDivision() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.map((item: IDivision) => (
+              {data?.data?.map((item: IDivision) => (
                 <TableRow key={item.name}>
                   <TableCell className="w-[50%]">{item?.name}</TableCell>
                   <TableCell className="w-full">

@@ -48,6 +48,7 @@ import z from "zod";
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
+  location: z.string().min(1, "Location is required"),
   costFrom: z.string().min(1, "Cost is required"),
   startDate: z.date({ message: "Start date is required" }),
   endDate: z.date({ message: "End date is required" }),
@@ -196,7 +197,7 @@ export default function AddTour() {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>Tour Title</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -205,6 +206,37 @@ export default function AddTour() {
                 )}
               />
               {/* Title */}
+
+              {/* Location and CostFrom */}
+              <div className="flex gap-5">
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Location</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="costFrom"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Per person Cost</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              {/* Location and CostFrom */}
 
               {/* Departure and Arrival Location */}
               <div className="flex gap-5">
@@ -258,19 +290,6 @@ export default function AddTour() {
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormLabel>Maximum Guest</FormLabel>
-                      <FormControl>
-                        <Input type="number" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="costFrom"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Per person Cost</FormLabel>
                       <FormControl>
                         <Input type="number" {...field} />
                       </FormControl>
@@ -381,7 +400,9 @@ export default function AddTour() {
                         <PopoverContent className="w-auto p-0" align="start">
                           <Calendar
                             mode="single"
-                            selected={new Date(field.value)}
+                            selected={
+                              field.value ? new Date(field.value) : undefined
+                            }
                             onSelect={field.onChange}
                             disabled={(date) =>
                               date <
@@ -428,7 +449,9 @@ export default function AddTour() {
                         <PopoverContent className="w-auto p-0" align="start">
                           <Calendar
                             mode="single"
-                            selected={new Date(field.value)}
+                            selected={
+                              field.value ? new Date(field.value) : undefined
+                            }
                             onSelect={field.onChange}
                             disabled={(date) =>
                               date <
@@ -488,7 +511,7 @@ export default function AddTour() {
                 </div>
                 <div className="space-y-4 mt-4">
                   {fields.map((item, index) => (
-                    <div className="flex gap-2">
+                    <div key={item.id} className="flex gap-2">
                       <FormField
                         control={form.control}
                         name={`included.${index}.value`}
@@ -531,7 +554,7 @@ export default function AddTour() {
                 </div>
                 <div className="space-y-4 mt-4">
                   {excludedFields.map((item, index) => (
-                    <div className="flex gap-2">
+                    <div key={index} className="flex gap-2">
                       <FormField
                         control={form.control}
                         name={`excluded.${index}.value`}
@@ -574,7 +597,7 @@ export default function AddTour() {
                 </div>
                 <div className="space-y-4 mt-4">
                   {amenitiesFields.map((item, index) => (
-                    <div className="flex gap-2">
+                    <div key={index} className="flex gap-2">
                       <FormField
                         control={form.control}
                         name={`amenities.${index}.value`}
@@ -617,7 +640,7 @@ export default function AddTour() {
                 </div>
                 <div className="space-y-4 mt-4">
                   {tourPlanFields.map((item, index) => (
-                    <div className="flex gap-2">
+                    <div key={index} className="flex gap-2">
                       <FormField
                         control={form.control}
                         name={`tourPlan.${index}.value`}

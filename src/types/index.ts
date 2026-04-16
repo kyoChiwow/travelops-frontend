@@ -6,6 +6,7 @@ export {
   type ISendOtp,
   type IVerifyOTP,
 } from "./auth.type";
+export type { ITourPackage } from "./tour.type";
 
 // General Response Type
 export interface IResponse<T> {
@@ -13,6 +14,7 @@ export interface IResponse<T> {
   success: boolean;
   message: string;
   data: T;
+  meta: IMeta;
 }
 // General Response Type
 
@@ -78,3 +80,12 @@ export interface ISidebarItem {
 // Role Type
 export type TRole = "SUPER_ADMIN" | "ADMIN" | "USER" | "GUIDE";
 // Role Type
+
+// Meta Type
+export interface IMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPage: number;
+}
+// Meta Type
