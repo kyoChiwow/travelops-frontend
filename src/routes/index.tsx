@@ -16,6 +16,7 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { adminSidebarItems } from "./adminSidebarItems";
 import { userSidebarItems } from "./userSidebarItems";
 import App from "@/App";
+import Profile from "@/pages/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
         Component: Booking,
         path: "booking/:id",
       },
+      {
+        Component: Profile,
+        path: "/me"
+      }
     ],
   },
   {

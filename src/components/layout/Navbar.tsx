@@ -148,6 +148,9 @@ export default function Navbar() {
               Logout
             </Button>
           )}
+          <Button>
+            <Link to={"/me"}>Go To Profile</Link>
+          </Button>
         </div>
       </div>
     </header>
