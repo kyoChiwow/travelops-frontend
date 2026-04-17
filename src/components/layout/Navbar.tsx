@@ -140,17 +140,19 @@ export default function Navbar() {
             </Button>
           )}
           {data?.data?.data?.email && (
-            <Button
-              variant={"outline"}
-              onClick={handleLogout}
-              className="text-sm"
-            >
-              Logout
-            </Button>
+            <div>
+              <Button
+                variant={"outline"}
+                onClick={handleLogout}
+                className="text-sm"
+              >
+                Logout
+              </Button>
+              <Button>
+                <Link to={"/me"}>Go To Profile</Link>
+              </Button>
+            </div>
           )}
-          <Button>
-            <Link to={"/me"}>Go To Profile</Link>
-          </Button>
         </div>
       </div>
     </header>

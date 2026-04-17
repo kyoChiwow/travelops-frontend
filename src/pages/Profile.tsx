@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,100 +12,226 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
+import {
+  useEditProfileMutation,
+  useUserInfoQuery,
+} from "@/redux/features/auth/auth.api";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { Link, useLocation, useNavigate } from "react-router";
+import { toast } from "sonner";
 
-interface ProfileFormData {
-  name: string;
-  email: string;
-  username: string;
-  avatar?: string;
-  bio?: string;
-}
+export default function Profile() {
+  const { data, isLoading, isError, error } = useUserInfoQuery(undefined);
+  const [editProfile, { isLoading: isUpdating }] = useEditProfileMutation();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-interface SettingsProfile1Props {
-  defaultValues?: Partial<ProfileFormData>;
-  onSave?: (data: ProfileFormData) => void;
-  className?: string;
-}
+  const from = location.state?.from || "/tours";
 
-export default function Profile({
-  defaultValues = {
-    name: "Alex Morgan",
-    email: "alex.morgan@email.com",
-    username: "alexmorgan",
-    avatar:
-      "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar/avatar8.jpg",
-    bio: "Product designer with 8+ years of experience crafting intuitive digital experiences. Currently focused on design systems and accessibility.",
-  },
-  className,
-}: SettingsProfile1Props) {
-  const initials = defaultValues.name
-    ?.split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
+  const form = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+    },
+  });
+
+  const err = error as FetchBaseQueryError;
+  const user = data?.data?.data;
+
+
+  // ✅ Sync API → form
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        address: user.address || "",
+      });
+    }
+  }, [user, form]);
+
+  const { dirtyFields } = form.formState;
+
+  // ✅ Submit
+  const onSubmit = async (values: any) => {
+    // 2. Create an object containing ONLY changed fields
+    const updatedData = Object.keys(dirtyFields).reduce((acc: any, key) => {
+      acc[key] = values[key];
+      return acc;
+    }, {});
+
+    // 3. Optional: Don't even call the API if nothing changed
+    if (Object.keys(updatedData).length === 0) {
+      toast.info("No changes made.");
+      return;
+    }
+
+    try {
+      const res = await editProfile({
+        userId: user._id,
+        data: updatedData,
+      }).unwrap();
+
+      if (res.success) {
+        toast.success("Profile has been successfully updated!");
+      }
+      navigate(from);
+    } catch (err) {
+      console.log("Update failed", err);
+      toast.error("Something went wrong!");
+    }
+  };
+
+  // ✅ Loading
+  if (isLoading) {
+    return (
+      <div className="flex flex-col justify-center items-center gap-4 min-h-screen">
+        <Button disabled size="sm">
+          <Spinner data-icon="inline-start" />
+          Loading...
+        </Button>
+      </div>
+    );
+  }
+
+  // ✅ Unauthorized
+  if (isError && err?.status === 403) {
+    return (
+      <div className="flex justify-center items-center my-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Unauthorized</CardTitle>
+            <CardDescription>
+              You need to login to view your profile
+            </CardDescription>
+          </CardHeader>
+
+          <CardFooter>
+            <Button asChild>
+              <Link to="/login">Go to Login</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
 
   return (
-    <Card className={cn("w-full max-w-lg", className)}>
-      <CardHeader>
-        <CardTitle>Profile</CardTitle>
-        <CardDescription>
-          Update your personal information and profile picture
-        </CardDescription>
-      </CardHeader>
+    <div className="flex justify-center">
+      <Card className={cn("w-full max-w-lg my-4")}>
+        <CardHeader>
+          <CardTitle>Profile</CardTitle>
+          <CardDescription>Update your personal information</CardDescription>
+        </CardHeader>
 
-      <CardContent className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input
-              id="name"
-              defaultValue={defaultValues.name}
-              placeholder="Enter your name"
-            />
+        <CardContent className="space-y-6">
+          {/* Profile Image */}
+          <div className="flex justify-center">
+            <Avatar className="w-20 h-20 mx-auto">
+              <AvatarImage src={user?.picture} />
+              <AvatarFallback>
+                {user?.name?.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              defaultValue={defaultValues.username}
-              placeholder="Enter username"
-            />
-          </div>
-        </div>
+          <Form {...form}>
+            <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
+              {/* Name */}
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            defaultValue={defaultValues.email}
-            placeholder="Enter your email"
-          />
-        </div>
+              {/* Email (disabled) */}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-        <div className="space-y-2">
-          <Label htmlFor="bio">Bio</Label>
-          <Textarea
-            id="bio"
-            rows={4}
-            defaultValue={defaultValues.bio}
-            placeholder="Tell us about yourself"
-          />
-          <p className="text-xs text-muted-foreground">
-            Brief description for your profile. Max 160 characters.
-          </p>
-        </div>
-      </CardContent>
+              {/* Phone */}
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter phone number" />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-      <CardFooter className="flex justify-end gap-2">
-        <Button variant="outline">Cancel</Button>
-        <Button>Save Changes</Button>
-      </CardFooter>
-    </Card>
+              {/* Address */}
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter address" />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              {/* Submit */}
+              <Button type="submit" className="w-full" disabled={isUpdating}>
+                {isUpdating ? "Saving..." : "Save Changes"}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+
+        <CardFooter className="flex justify-end gap-2">
+          <Button
+            variant="outline"
+            onClick={() =>
+              form.reset({
+                name: user?.name || "",
+                email: user?.email || "",
+                phone: user?.phone || "",
+                address: user?.address || "",
+              })
+            }
+          >
+            Cancel
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

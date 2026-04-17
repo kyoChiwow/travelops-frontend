@@ -1,16 +1,29 @@
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { useGetAllTourQuery } from "@/redux/features/Tour/tour.api";
 import type { ITourPackage } from "@/types";
 import { useState } from "react";
-import { useParams } from "react-router";
+import { Link, useLocation, useParams } from "react-router";
 
 export default function Booking() {
   const [guestCount, setGuestCount] = useState(1);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const { id } = useParams();
   const { data, isLoading, isError } = useGetAllTourQuery({ _id: id });
+  const { data: userData } = useUserInfoQuery(undefined);
+  const location = useLocation();
 
+  const user = userData?.data?.data;
   const tourData = data?.data?.[0] as ITourPackage;
 
   const totalAmount = guestCount * (tourData?.costFrom || 0);
@@ -35,7 +48,10 @@ export default function Booking() {
   }
 
   const handleBooking = async () => {
-    console.log(guestCount);
+    if (!user.phone && !user.address) {
+      setOpenDialog(true);
+      return;
+    }
   };
 
   return (
@@ -156,6 +172,31 @@ export default function Booking() {
           </div>
         </>
       )}
+      {/* Dialog for the profile here */}
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Complete Your Profile</DialogTitle>
+            <DialogDescription>
+              You need to add your phone number and address before booking a
+              tour.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="flex gap-2">
+            <Button variant="outline" onClick={() => setOpenDialog(false)}>
+              Cancel
+            </Button>
+
+            <Button asChild>
+              <Link 
+              to="/me"
+              state={{ from: location.pathname }}
+              >Go to Profile</Link>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
