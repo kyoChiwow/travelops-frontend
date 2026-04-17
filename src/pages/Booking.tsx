@@ -9,19 +9,23 @@ import {
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { useCreateBookingMutation } from "@/redux/features/booking/booking.api";
 import { useGetAllTourQuery } from "@/redux/features/Tour/tour.api";
-import type { ITourPackage } from "@/types";
+import type { ICreateBooking, ITourPackage } from "@/types";
 import { useState } from "react";
 import { Link, useLocation, useParams } from "react-router";
+import { toast } from "sonner";
 
 export default function Booking() {
   const [guestCount, setGuestCount] = useState(1);
   const [openDialog, setOpenDialog] = useState(false);
 
   const { id } = useParams();
+  const location = useLocation();
+
   const { data, isLoading, isError } = useGetAllTourQuery({ _id: id });
   const { data: userData } = useUserInfoQuery(undefined);
-  const location = useLocation();
+  const [createBooking] = useCreateBookingMutation(undefined);
 
   const user = userData?.data?.data;
   const tourData = data?.data?.[0] as ITourPackage;
@@ -51,6 +55,26 @@ export default function Booking() {
     if (!user.phone && !user.address) {
       setOpenDialog(true);
       return;
+    }
+    
+    if (!data || !id) return;
+
+    const bookingData: ICreateBooking = {
+      tour: id,
+      guestCount,
+    }
+
+    try {
+      const res = await createBooking(bookingData).unwrap();
+
+      if (res.success) {
+        window.open(res.data.paymentUrl, "_blank");
+        toast.success("Booking created successfully!");
+      }
+      console.log(res)
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong!");
     }
   };
 
@@ -117,6 +141,7 @@ export default function Booking() {
               </ol>
             </div>
           </div>
+          {/* Left Section - Tour Summary */}
 
           {/* Right Section - Booking Details */}
           <div className="w-full md:w-96">
@@ -170,6 +195,7 @@ export default function Booking() {
               </div>
             </div>
           </div>
+          {/* Right Section - Booking Details */}
         </>
       )}
       {/* Dialog for the profile here */}
@@ -189,10 +215,9 @@ export default function Booking() {
             </Button>
 
             <Button asChild>
-              <Link 
-              to="/me"
-              state={{ from: location.pathname }}
-              >Go to Profile</Link>
+              <Link to="/me" state={{ from: location.pathname }}>
+                Go to Profile
+              </Link>
             </Button>
           </DialogFooter>
         </DialogContent>

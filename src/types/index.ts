@@ -6,6 +6,7 @@ export {
   type ISendOtp,
   type IVerifyOTP,
 } from "./auth.type";
+export type { Booking, IBooking, ICreateBooking } from "./booking.type";
 export type { ITourPackage } from "./tour.type";
 
 // General Response Type
@@ -14,7 +15,7 @@ export interface IResponse<T> {
   success: boolean;
   message: string;
   data: T;
-  meta: IMeta;
+  meta?: IMeta;
 }
 // General Response Type
 

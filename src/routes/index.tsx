@@ -17,6 +17,9 @@ import { adminSidebarItems } from "./adminSidebarItems";
 import { userSidebarItems } from "./userSidebarItems";
 import App from "@/App";
 import Profile from "@/pages/Profile";
+import Success from "@/pages/Payment/Success";
+import Fail from "@/pages/Payment/Fail";
+import Cancel from "@/pages/Payment/Cancel";
 
 export const router = createBrowserRouter([
   {
@@ -40,7 +43,7 @@ export const router = createBrowserRouter([
         path: "tours/:id",
       },
       {
-        Component: Booking,
+        Component: withAuth(Booking),
         path: "booking/:id",
       },
       {
@@ -80,5 +83,17 @@ export const router = createBrowserRouter([
   {
     Component: Unauthorized,
     path: "/unauthorized",
+  },
+  {
+    Component: Success,
+    path: "/payment/success",
+  },
+  {
+    Component: Fail,
+    path: "/payment/fail",
+  },
+  {
+    Component: Cancel,
+    path: "/payment/cancel",
   },
 ]);
