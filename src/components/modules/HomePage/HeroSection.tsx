@@ -1,6 +1,17 @@
 import Logo from "@/assets/icons/Logo";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
+import { useState } from "react";
 import { Link } from "react-router";
 
 interface Hero12Props {
@@ -8,8 +19,24 @@ interface Hero12Props {
 }
 
 export default function HeroSection({ className }: Hero12Props) {
+  const [selectedDivision, setSelectedDivision] = useState<
+    string | undefined
+  >();
+
+  const { data: divisionData } =
+    useGetDivisionsQuery(undefined);
+
+  const divisionOptions = divisionData?.data?.map(
+    (item: { _id: string; name: string }) => ({
+      value: item._id,
+      label: item.name,
+    }),
+  );
+
   return (
-    <section className={cn("relative overflow-hidden py-32 min-h-screen", className)}>
+    <section
+      className={cn("relative overflow-hidden py-32 min-h-screen", className)}
+    >
       <div className="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center opacity-100">
         <img
           alt="background"
@@ -29,12 +56,32 @@ export default function HeroSection({ className }: Hero12Props) {
                 <span className="text-primary">Bangaldesh</span>
               </h1>
               <p className="mx-auto max-w-3xl text-muted-foreground lg:text-xl">
-                Discover unforgettable journeys tailored to your travel style. From breathtaking destinations to carefully curated experiences, explore tours designed to make every moment count. Plan smarter, travel better, and create memories that last a lifetime.
+                Discover unforgettable journeys tailored to your travel style.
+                From breathtaking destinations to carefully curated experiences,
+                explore tours designed to make every moment count. Plan smarter,
+                travel better, and create memories that last a lifetime.
               </p>
             </div>
-            <div className="mt-6 flex justify-center gap-3">
-              <Button asChild className="group">
-                <Link to={"/tours"}>Explore</Link>
+            <div className="mt-6 flex justify-center gap-3 items-center">
+              <Select onValueChange={(value) => setSelectedDivision(value)}>
+                <SelectTrigger className="w-75">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Divisions</SelectLabel>
+                    {divisionOptions?.map(
+                      (item: { value: string; label: string }) => (
+                        <SelectItem key={item.value} value={item.value}>
+                          {item.label}
+                        </SelectItem>
+                      ),
+                    )}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <Button disabled={!selectedDivision}>
+                <Link to={`/tours?division=${selectedDivision}`}>Search</Link>
               </Button>
             </div>
           </div>
