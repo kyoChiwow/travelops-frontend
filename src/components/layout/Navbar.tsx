@@ -41,6 +41,7 @@ export default function Navbar() {
     try {
       await logout(undefined).unwrap();
       dispatch(authApi.util.resetApiState());
+      window.location.href = "/login";
     } catch (error) {
       console.log(error);
     }
