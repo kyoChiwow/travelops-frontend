@@ -39,7 +39,7 @@ export function LoginForm({
     } catch (err: any) {
       console.log(err);
 
-      if (err.data.message === "User is not verified!") {
+      if (err.message === "User is not verified!") {
         toast.error("Your account is not verified!");
         navigate("/verify", {
           state: data.email,
