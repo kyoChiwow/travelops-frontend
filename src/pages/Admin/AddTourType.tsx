@@ -28,7 +28,7 @@ import { toast } from "sonner";
 
 export default function AddTourType() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit] = useState(10);
 
   const { data } = useGetTourTypesQuery({ page: currentPage, limit });
   const [removeTourType] = useRemoveTourTypeMutation();
