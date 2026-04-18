@@ -92,6 +92,7 @@ export function AddDivisionModal() {
                   <FormLabel>Division description</FormLabel>
                   <FormControl>
                     <Textarea
+                    className="h-50"
                       placeholder="Division description here"
                       {...field}
                     />

@@ -11,7 +11,7 @@ export default function ImagePreview({ src }: { src: string }) {
         />
       </DialogTrigger>
 
-      <DialogContent className="max-w-3xl p-2">
+      <DialogContent className="xl:max-w-250! lg:max-w-200! p-2">
         <img src={src} alt="full" className="w-full h-auto rounded-md" />
       </DialogContent>
     </Dialog>

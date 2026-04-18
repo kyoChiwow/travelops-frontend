@@ -4,7 +4,7 @@ import type { ITourPackage } from "@/types/tour.type";
 
 export const tourApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    addTourType: builder.mutation<IResponse<null>, string>({
+    addTourType: builder.mutation<IResponse<null>, {name: string}>({
       query: (tourTypeName) => ({
         url: "/tour/create-tour-type",
         method: "POST",
