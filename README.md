@@ -1,73 +1,173 @@
-# React + TypeScript + Vite
+# 🌍 TravelOps Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern **tour management frontend application** built with **React, TypeScript, and Vite**.
+This project allows admins to create, manage, and organize tours with dynamic forms, image uploads, and structured data handling.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Features
 
-## React Compiler
+* 🧾 Create and manage tours with rich form inputs
+* 🖼️ Multiple image upload support
+* 📅 Date selection with calendar picker
+* 📍 Division & tour type selection (dynamic from API)
+* ➕ Dynamic fields (Included, Excluded, Amenities, Tour Plan)
+* 🔔 Toast notifications for actions
+* ✅ Form validation using Zod + React Hook Form
+* ⚡ Fast performance with Vite
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Frontend**
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* React 19
+* TypeScript
+* Vite
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+**State Management**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+* Redux Toolkit (RTK Query)
+
+**UI & Styling**
+
+* Tailwind CSS
+* ShadCN UI
+* Lucide Icons
+
+**Forms & Validation**
+
+* React Hook Form
+* Zod
+
+**Utilities**
+
+* Axios
+* date-fns
+* Sonner (toast)
+
+---
+
+## 📦 Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/travelops-frontend.git
+
+# Navigate to project
+cd travelops-frontend
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🧪 Scripts
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev       # Start development server
+npm run build     # Build for production
+npm run preview   # Preview production build
+npm run lint      # Run ESLint
 ```
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+│
+├── components/        # Reusable UI components
+├── pages/             # Application pages
+├── redux/             # Redux store & API slices
+├── lib/               # Utility functions
+├── hooks/             # Custom hooks
+└── assets/            # Static files
+```
+
+---
+
+## 🔌 API Integration
+
+This project uses **RTK Query** for API communication.
+
+Main features:
+
+* Fetch divisions
+* Fetch tour types
+* Create tours (with FormData + images)
+
+Make sure your backend is running and API base URL is correctly configured.
+
+---
+
+## 🖼️ Image Upload
+
+* Supports multiple images
+* Images are sent as `FormData`
+* Backend should handle:
+
+  * `files` (images)
+  * `data` (stringified JSON)
+
+---
+
+## ⚙️ Environment Setup
+
+Create a `.env` file:
+
+```
+VITE_API_BASE_URL=http://localhost:5000/api/v1
+```
+
+---
+
+## 📸 Screenshots
+
+*Add your UI screenshots here*
+
+---
+
+## 📌 Future Improvements
+
+* ✏️ Edit & update tours
+* 🗑️ Delete tours
+* 🔍 Search & filter tours
+* 👤 Authentication & role-based access
+* 📊 Dashboard analytics
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repo
+2. Create a new branch
+3. Make your changes
+4. Submit a pull request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👨‍💻 Author
+
+**MD. Shafiqul Islam**
+Full Stack Web Developer
+
+---
+
+## ⭐ Support
+
+If you like this project, give it a ⭐ on GitHub!

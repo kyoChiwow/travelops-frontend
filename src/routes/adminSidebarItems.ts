@@ -5,6 +5,7 @@ const Analytics = lazyLoading("Admin/Analytics");
 const AddTour = lazyLoading("Admin/AddTour");
 const AddTourType = lazyLoading("Admin/AddTourType");
 const AddDivision = lazyLoading("Admin/AddDivision");
+const AllToursList = lazyLoading("Admin/AllToursList");
 
 export const adminSidebarItems: ISidebarItem[] = [
   {
@@ -35,6 +36,11 @@ export const adminSidebarItems: ISidebarItem[] = [
         url: "/admin/add-tour",
         component: AddTour,
       },
+      {
+        title: "All Tours List",
+        url: "/admin/all-tours-list",
+        component: AllToursList,
+      }
     ],
   },
 ];
