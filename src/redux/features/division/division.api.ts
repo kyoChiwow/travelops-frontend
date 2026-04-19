@@ -1,4 +1,5 @@
 import { baseApi } from "@/redux/baseApi";
+import type { IDivision, IResponse } from "@/types";
 
 export const divisionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -6,6 +7,17 @@ export const divisionApi = baseApi.injectEndpoints({
       query: (divisionData) => ({
         url: "/division/create",
         method: "POST",
+        data: divisionData,
+      }),
+      invalidatesTags: ["DIVISION"],
+    }),
+    updateDivision: builder.mutation<
+      IResponse<IDivision>,
+      { divisionData: Partial<IDivision>; id: string }
+    >({
+      query: ({ divisionData, id }) => ({
+        url: `/division/${id}`,
+        method: "PATCH",
         data: divisionData,
       }),
       invalidatesTags: ["DIVISION"],
@@ -30,6 +42,7 @@ export const divisionApi = baseApi.injectEndpoints({
 
 export const {
   useAddDivisionMutation,
+  useUpdateDivisionMutation,
   useGetDivisionsQuery,
   useDeleteDivisionMutation,
 } = divisionApi;

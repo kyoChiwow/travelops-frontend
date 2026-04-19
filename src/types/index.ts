@@ -8,6 +8,7 @@ export {
 } from "./auth.type";
 export type { Booking, IBooking, ICreateBooking } from "./booking.type";
 export type { ITourPackage } from "./tour.type";
+export type { IDivision } from "./division.type";
 
 // General Response Type
 export interface IResponse<T> {

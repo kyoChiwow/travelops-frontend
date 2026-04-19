@@ -1,6 +1,7 @@
 import { DeleteConfirmation } from "@/components/DeleteConfirmation";
 import ImagePreview from "@/components/ImagePreview";
 import { AddDivisionModal } from "@/components/modules/Division/AddDivisionModal";
+import { EditDivisionModal } from "@/components/modules/Division/EditDivisionModal";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -14,7 +15,7 @@ import {
   useDeleteDivisionMutation,
   useGetDivisionsQuery,
 } from "@/redux/features/division/division.api";
-import { Edit2, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface IDivision {
@@ -26,8 +27,6 @@ interface IDivision {
 export default function AddDivision() {
   const { data } = useGetDivisionsQuery(undefined);
   const [removeDivision] = useDeleteDivisionMutation();
-  
-  console.log(data)
 
   const handleRemoveTourType = async (divisionId: string) => {
     try {
@@ -65,9 +64,8 @@ export default function AddDivision() {
                     <ImagePreview src={item?.thumbnail} />
                   </TableCell>
                   <TableCell>
-                    <Button  size={"sm"}>
-                      <Edit2 />
-                    </Button>
+                    <EditDivisionModal id={item._id} />
+
                     <DeleteConfirmation
                       onConfirm={() => handleRemoveTourType(item._id)}
                     >
