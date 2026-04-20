@@ -76,16 +76,16 @@ export default function AllToursList() {
                           <Trash2 />
                         </Button>
                       </DeleteConfirmation>
-                      <Button size={"sm"}>
-                        <Link to={`/tours/${item._id}`}>
+                      <Link to={`/tours/${item._id}`}>
+                        <Button size={"sm"}>
                           <Info />
-                        </Link>
-                      </Button>
-                      <Button size={"sm"}>
-                        <Link to={`/admin/edit-tour/${item._id}`}>
+                        </Button>
+                      </Link>
+                      <Link to={`/admin/edit-tour/${item._id}`}>
+                        <Button size={"sm"}>
                           <Edit2 />
-                        </Link>
-                      </Button>
+                        </Button>
+                      </Link>
                     </TableCell>
                   </TableRow>
                 ))}
