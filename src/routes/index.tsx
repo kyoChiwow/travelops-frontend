@@ -1,9 +1,15 @@
+import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { role } from "@/constants/role";
 import About from "@/pages/About";
+import EditTour from "@/pages/Admin/EditTour";
 import Booking from "@/pages/Booking";
 import HomePage from "@/pages/HomePage";
 import Login from "@/pages/Login";
+import Cancel from "@/pages/Payment/Cancel";
+import Fail from "@/pages/Payment/Fail";
+import Success from "@/pages/Payment/Success";
+import Profile from "@/pages/Profile";
 import Register from "@/pages/Register";
 import Tour from "@/pages/Tour";
 import TourDetails from "@/pages/TourDetails";
@@ -15,11 +21,6 @@ import { withAuth } from "@/utils/withAuth";
 import { createBrowserRouter, Navigate } from "react-router";
 import { adminSidebarItems } from "./adminSidebarItems";
 import { userSidebarItems } from "./userSidebarItems";
-import App from "@/App";
-import Profile from "@/pages/Profile";
-import Success from "@/pages/Payment/Success";
-import Fail from "@/pages/Payment/Fail";
-import Cancel from "@/pages/Payment/Cancel";
 
 export const router = createBrowserRouter([
   {
@@ -48,8 +49,12 @@ export const router = createBrowserRouter([
       },
       {
         Component: Profile,
-        path: "/me"
-      }
+        path: "/me",
+      },
+      {
+        Component: withAuth(EditTour),
+        path: "/admin/edit-tour/:id",
+      },
     ],
   },
   {

@@ -4,7 +4,7 @@ import type { ITourPackage } from "@/types/tour.type";
 
 export const tourApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    addTourType: builder.mutation<IResponse<null>, {name: string}>({
+    addTourType: builder.mutation<IResponse<null>, { name: string }>({
       query: (tourTypeName) => ({
         url: "/tour/create-tour-type",
         method: "POST",
@@ -47,6 +47,25 @@ export const tourApi = baseApi.injectEndpoints({
         response: IResponse<{ data: ITourPackage[]; meta: IMeta }>,
       ) => response.data,
     }),
+    updateTour: builder.mutation<
+      IResponse<ITourPackage>,
+      { id: string; tourData: FormData }
+    >({
+      query: ({ id, tourData }) => ({
+        url: `/tour/${id}`,
+        method: "PATCH",
+        data: tourData,
+      }),
+      invalidatesTags: ["TOUR"],
+    }),
+    deleteTour: builder.mutation<IResponse<null>, { id: string }>({
+      query: (params) => ({
+        url: "/tour",
+        method: "DELETE",
+        params,
+      }),
+      invalidatesTags: ["TOUR"],
+    }),
   }),
 });
 
@@ -56,4 +75,6 @@ export const {
   useRemoveTourTypeMutation,
   useAddTourMutation,
   useGetAllTourQuery,
+  useUpdateTourMutation,
+  useDeleteTourMutation,
 } = tourApi;

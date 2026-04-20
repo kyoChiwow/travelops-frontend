@@ -1,15 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DeleteConfirmation } from "@/components/DeleteConfirmation";
 import { AddTourTypeModal } from "@/components/modules/TourType/AddTourTypeModal";
+import PaginationComponent from "@/components/PaginationComponent";
 import { Button } from "@/components/ui/button";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
   Table,
   TableBody,
@@ -82,48 +75,11 @@ export default function AddTourType() {
       </div>
 
       {/* <Pagination */}
-      {totalPage > 1 && (
-        <div className="flex justify-end mt-6">
-          <div>
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() => setCurrentPage((prev) => prev - 1)}
-                    className={
-                      currentPage === 1
-                        ? "pointer-events-none opacity-50"
-                        : "pointer-events-auto"
-                    }
-                  />
-                </PaginationItem>
-                {Array.from({ length: totalPage }, (_, index) => index + 1).map(
-                  (page) => (
-                    <PaginationItem
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                    >
-                      <PaginationLink isActive={currentPage === page}>
-                        {page}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ),
-                )}
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() => setCurrentPage((prev) => prev + 1)}
-                    className={
-                      currentPage === totalPage
-                        ? "pointer-events-none opacity-50"
-                        : "pointer-events-auto"
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
-        </div>
-      )}
+      <PaginationComponent
+        currentPage={currentPage}
+        totalPage={totalPage}
+        setCurrentPage={(page) => setCurrentPage(page)}
+      />
       {/* Pagination */}
     </div>
   );

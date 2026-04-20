@@ -40,7 +40,7 @@ export const adminSidebarItems: ISidebarItem[] = [
         title: "All Tours List",
         url: "/admin/all-tours-list",
         component: AllToursList,
-      }
+      },
     ],
   },
 ];
