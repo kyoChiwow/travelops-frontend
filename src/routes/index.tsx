@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
       },
       {
         Component: withAuth(EditTour),
-        path: "/admin/edit-tour/:slug",
+        path: "/admin/edit-tour/:id",
       },
     ],
   },

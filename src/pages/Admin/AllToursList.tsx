@@ -10,10 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetAllTourQuery } from "@/redux/features/Tour/tour.api";
+import {
+  useDeleteTourMutation,
+  useGetAllTourQuery,
+} from "@/redux/features/Tour/tour.api";
 import { Edit2, Info, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router";
+import { toast } from "sonner";
 
 export default function AllToursList() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,16 +34,28 @@ export default function AllToursList() {
     page: currentPage,
     limit,
   });
+  const [deleteTour] = useDeleteTourMutation();
 
   const allTours = data?.data;
 
   const totalPage = data?.meta?.totalPage || 1;
 
-  const handleRemoveTour = (id: string) => {
-    console.log("Clicked!", id);
-  };
+  const handleRemoveTour = async (id: string) => {
+    const toastId = toast.loading("Deleting tour...");
 
-  console.log(allTours?.map((item) => item.slug));
+    try {
+      const res = await deleteTour(id).unwrap();
+
+      if (res.success) {
+        toast.success("Tour removed successfully!", { id: toastId });
+      } else {
+        toast.error("Failed to delete tour", { id: toastId });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong!", { id: toastId });
+    }
+  };
 
   return (
     <div>
@@ -83,7 +99,7 @@ export default function AllToursList() {
                           <Info />
                         </Button>
                       </Link>
-                      <Link to={`/admin/edit-tour/${item.slug}`}>
+                      <Link to={`/admin/edit-tour/${item._id}`}>
                         <Button size={"sm"}>
                           <Edit2 />
                         </Button>

@@ -34,7 +34,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
 import {
-  useGetSingleTourQuery,
+  useGetAllTourQuery,
   useGetTourTypesQuery,
   useUpdateTourMutation,
 } from "@/redux/features/Tour/tour.api";
@@ -67,23 +67,22 @@ const formSchema = z.object({
 });
 
 export default function EditTour() {
-  const { slug } = useParams();
+  const { id } = useParams();
   const [images, setImages] = useState<File[] | []>([]);
   const [deleteImages, setDeleteImages] = useState<string[]>([]);
 
-  console.log(slug);
+  console.log(id);
 
-  const { data: tourData, isLoading: tourLoading } = useGetSingleTourQuery(
-    slug!,
-    { skip: !slug },
-  );
+  const { data: tourData, isLoading: tourLoading } = useGetAllTourQuery({
+    _id: id,
+  });
   const { data: tourTypeData, isLoading: tourTypeLoading } =
-    useGetTourTypesQuery({ limit: 1000 }, { skip: !slug || tourLoading });
+    useGetTourTypesQuery({ limit: 1000 }, { skip: !id || tourLoading });
   const { data: divisionData, isLoading: divisionLoading } =
-    useGetDivisionsQuery(undefined, { skip: !slug || tourLoading });
+    useGetDivisionsQuery(undefined, { skip: !id || tourLoading });
   const [updateTour] = useUpdateTourMutation();
 
-  const tour = tourData?.data;
+  const tour = tourData?.data?.[0];
 
   console.log(tour);
 
@@ -230,9 +229,9 @@ export default function EditTour() {
     images.forEach((image) => formData.append("files", image));
 
     try {
-      if (!tour?._id) return;
+      if (!id) return;
       const res = await updateTour({
-        id: tour?._id,
+        id,
         tourData: formData as FormData,
       }).unwrap();
       if (res.success) {
