@@ -10,8 +10,9 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { useCreateBookingMutation } from "@/redux/features/booking/booking.api";
-import { useGetAllTourQuery } from "@/redux/features/Tour/tour.api";
+import { useGetAllTourQuery, useGetTourTypesQuery } from "@/redux/features/Tour/tour.api";
 import type { ICreateBooking, ITourPackage } from "@/types";
+import { format } from "date-fns";
 import { useState } from "react";
 import { Link, useLocation, useParams } from "react-router";
 import { toast } from "sonner";
@@ -29,6 +30,15 @@ export default function Booking() {
 
   const user = userData?.data?.data;
   const tourData = data?.data?.[0] as ITourPackage;
+  const tourTypeId = data?.data?.[0]?.tourType;
+
+   const { data: tourTypeData } = useGetTourTypesQuery(
+      {
+        _id: tourTypeId,
+        fields: "name",
+      },
+      { skip: !tourTypeId },
+    );
 
   const totalAmount = guestCount * (tourData?.costFrom || 0);
 
@@ -56,13 +66,13 @@ export default function Booking() {
       setOpenDialog(true);
       return;
     }
-    
+
     if (!data || !id) return;
 
     const bookingData: ICreateBooking = {
       tour: id,
       guestCount,
-    }
+    };
 
     try {
       const res = await createBooking(bookingData).unwrap();
@@ -71,7 +81,7 @@ export default function Booking() {
         window.open(res.data.paymentUrl, "_blank");
         toast.success("Booking created successfully!");
       }
-      console.log(res)
+      console.log(res);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong!");
@@ -111,11 +121,23 @@ export default function Booking() {
                   <strong>Location:</strong> {tourData?.location}
                 </div>
                 <div>
-                  <strong>Duration:</strong> {tourData?.startDate} to{" "}
-                  {tourData?.endDate}
+                  <strong>Duration:</strong>{" "}
+                  {format(
+                    new Date(
+                      tourData?.startDate ? tourData?.startDate : new Date(),
+                    ),
+                    "PP",
+                  )}{" "}
+                  -{" "}
+                  {format(
+                    new Date(
+                      tourData?.endDate ? tourData?.endDate : new Date(),
+                    ),
+                    "PP",
+                  )}
                 </div>
                 <div>
-                  <strong>Tour Type:</strong> {tourData?.tourType}
+                  <strong>Tour Type:</strong> {tourTypeData?.data?.[0]?.name}
                 </div>
                 <div>
                   <strong>Max Guests:</strong> {tourData?.maxGuest}

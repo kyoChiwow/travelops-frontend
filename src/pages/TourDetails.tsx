@@ -32,8 +32,6 @@ export default function TourDetails() {
     { skip: !tourTypeId },
   );
 
-  console.log(tourTypeData);
-
   const tourData = data?.data?.[0] as ITourPackage;
 
   if (isLoading) {

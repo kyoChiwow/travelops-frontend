@@ -1,17 +1,29 @@
 import TourFilters from "@/components/modules/Tour/TourFilters";
+import PaginationComponent from "@/components/PaginationComponent";
 import { Button } from "@/components/ui/button";
 
 import { useGetAllTourQuery } from "@/redux/features/Tour/tour.api";
+import { useState } from "react";
 import { Link, useSearchParams } from "react-router";
 
 export default function Tour() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit] = useState(10);
+
   const [searchParams] = useSearchParams();
-  
+
   const division = searchParams.get("division") || undefined;
   const tourType = searchParams.get("tourType") || undefined;
 
+  const { data } = useGetAllTourQuery({
+    division,
+    tourType,
+    page: currentPage,
+    limit,
+  });
+  const totalPage = data?.meta?.totalPage || 1;
 
-  const { data } = useGetAllTourQuery({ division, tourType });
+  console.log(totalPage);
 
   return (
     <div className="container mx-auto px-5 py-8 grid grid-cols-12 gap-5">
@@ -83,6 +95,11 @@ export default function Tour() {
           </div>
         ))}
       </div>
+      <PaginationComponent
+        currentPage={currentPage}
+        totalPage={totalPage}
+        setCurrentPage={(page) => setCurrentPage(page)}
+      />
     </div>
   );
 }
