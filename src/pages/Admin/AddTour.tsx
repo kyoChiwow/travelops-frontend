@@ -67,7 +67,7 @@ const formSchema = z.object({
 export default function AddTour() {
   const [images, setImages] = useState<File[] | []>([]);
 
-  const { data: tourTypeData } = useGetTourTypesQuery(undefined);
+  const { data: tourTypeData } = useGetTourTypesQuery({ limit: 1000 });
   const { data: divisionData, isLoading: divisionLoading } =
     useGetDivisionsQuery(undefined);
   const [addTour] = useAddTourMutation();
@@ -90,6 +90,7 @@ export default function AddTour() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
+      location: "",
       division: "",
       tourType: "",
       description: "",

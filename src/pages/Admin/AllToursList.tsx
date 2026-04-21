@@ -39,6 +39,8 @@ export default function AllToursList() {
     console.log("Clicked!", id);
   };
 
+  console.log(allTours?.map((item) => item.slug));
+
   return (
     <div>
       {/* Header */}
@@ -81,7 +83,7 @@ export default function AllToursList() {
                           <Info />
                         </Button>
                       </Link>
-                      <Link to={`/admin/edit-tour/${item._id}`}>
+                      <Link to={`/admin/edit-tour/${item.slug}`}>
                         <Button size={"sm"}>
                           <Edit2 />
                         </Button>
